@@ -95,3 +95,7 @@ that one file if you move machines.
 ---
 
 Not affiliated with Blizzard Entertainment. Overwatch and hero artwork © Blizzard Entertainment.
+
+## License
+
+Released into the public domain under [The Unlicense](LICENSE) — use it for anything, no attribution required.
