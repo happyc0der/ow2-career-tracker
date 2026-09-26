@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Career Tracker · Overwatch 2</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='none' stroke='%23f99e1a' stroke-width='4'/%3E%3Cpath d='M11 22 16 9l5 13' fill='none' stroke='%23fff' stroke-width='3.5'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Condensed:ital,wght@0,500;0,600;0,700;1,600;1,700&family=Teko:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css?v=1.1">
+</head>
+<body>
+  <div class="bg-stripes" aria-hidden="true"></div>
+
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <span class="brand-text">Career <b>Tracker</b></span>
+    </div>
+    <nav class="mode-tabs" role="tablist" aria-label="Game mode">
+      <button class="tab" role="tab" data-mode="all">All modes</button>
+      <button class="tab" role="tab" data-mode="quickplay">Quick Play</button>
+      <button class="tab" role="tab" data-mode="competitive">Competitive</button>
+    </nav>
+    <button class="btn-sync" id="sync-btn" title="Fetch the latest stats now">
+      <span class="sync-icon" aria-hidden="true">⟳</span><span class="sync-label">Sync</span>
+    </button>
+  </header>
+
+  <main>
+    <!-- Player banner -->
+    <section class="banner" id="banner">
+      <div class="banner-bg" id="banner-bg"></div>
+      <div class="banner-content">
+        <div class="avatar-frame"><img id="avatar" alt="Player icon"></div>
+        <div class="identity">
+          <div class="title-line" id="player-title"></div>
+          <h1 id="player-name">—</h1>
+          <div class="identity-meta">
+            <span class="endorse" id="endorse"></span>
+            <span class="tracking" id="tracking"></span>
+          </div>
+        </div>
+        <div class="ranks" id="ranks"></div>
+      </div>
+    </section>
+
+    <!-- Headline stats -->
+    <section class="stat-strip" id="stat-strip"></section>
+
+    <!-- Career over time + role split -->
+    <section class="row two-col">
+      <div class="panel">
+        <div class="panel-head"><h2>Career over time</h2><span class="hint" id="overview-hint"></span></div>
+        <div class="chart-wrap tall"><canvas id="overview-chart"></canvas></div>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><h2>Role split</h2><span class="hint">share of time played</span></div>
+        <div id="role-split" class="role-split"></div>
+      </div>
+    </section>
+
+    <!-- Hero roster + detail -->
+    <section class="row roster-row">
+      <div class="panel roster-panel">
+        <div class="panel-head">
+          <h2>Heroes</h2>
+          <div class="roster-tools">
+            <div class="role-filter" id="role-filter" role="group" aria-label="Filter by role">
+              <button class="chip active" data-role="all">All</button>
+              <button class="chip" data-role="tank" title="Tank"></button>
+              <button class="chip" data-role="damage" title="Damage"></button>
+              <button class="chip" data-role="support" title="Support"></button>
+            </div>
+            <select id="sort" aria-label="Sort heroes">
+              <option value="time_played">Time played</option>
+              <option value="winrate">Win rate</option>
+              <option value="kda">KDA</option>
+              <option value="games_played">Games</option>
+            </select>
+          </div>
+        </div>
+        <div class="roster" id="roster"></div>
+      </div>
+
+      <div class="panel hero-panel" id="hero-panel">
+        <div class="hero-head">
+          <div class="hero-portrait"><img id="hero-portrait" alt=""></div>
+          <div class="hero-id">
+            <div class="hero-role" id="hero-role"></div>
+            <h2 class="hero-name" id="hero-name">Select a hero</h2>
+            <div class="hero-record" id="hero-record"></div>
+          </div>
+        </div>
+        <div class="hero-stats" id="hero-stats"></div>
+        <div class="since-box" id="since-box"></div>
+        <div class="panel-head sub"><h3>Over time</h3><span class="hint" id="hero-hint"></span></div>
+        <div class="chart-grid" id="chart-grid"></div>
+        <div class="panel-head sub"><h3>Career detail</h3>
+          <div class="cat-tabs" id="cat-tabs"></div>
+        </div>
+        <div class="career-table" id="career-table"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <span id="foot-sync"></span>
+    <span>Data from the public career profile via <a href="https://overfast-api.tekrop.fr" target="_blank" rel="noopener">OverFast API</a> (unofficial). Not affiliated with Blizzard.</span>
+  </footer>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+  <script src="app.js?v=1.1"></script>
+</body>
+</html>

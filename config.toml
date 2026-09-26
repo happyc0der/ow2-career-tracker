@@ -1,0 +1,16 @@
+# OW2 career dashboard settings.
+
+[player]
+# Display name as shown in-game. Used to look the player up if player_id stops working.
+name = "DankAxon"
+# Blizzard's internal id for the profile (from https://overfast-api.tekrop.fr/players?name=DankAxon).
+# The old BattleTag form (DankAxon-3198) no longer resolves, so the id is used instead.
+player_id = "d65fa281926994a3a4a12ea6dd|09da774c5ab3d84f981a4520bfd146d6"
+
+[api]
+# OverFast API: free, unofficial Overwatch 2 API that reads the public Blizzard career profile.
+base_url = "https://overfast-api.tekrop.fr"
+
+[server]
+host = "127.0.0.1"
+port = 8765
