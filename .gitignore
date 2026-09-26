@@ -2,3 +2,6 @@
 __pycache__/
 *.pyc
 data/
+*.db
+*.log
+.DS_Store

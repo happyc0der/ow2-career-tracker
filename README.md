@@ -34,12 +34,14 @@ Blizzard career profile  ──►  OverFast API  ──►  owdash sync  ──
 
 Needs [uv](https://docs.astral.sh/uv/) (it installs Python and the dependencies itself).
 
-**Windows:** Start menu → **OW2 Career Tracker** (after running the installer below), or:
-
-```powershell
-cd "C:\Users\KESHAV\Desktop\TOFIN\NYU\ProjectE"
+```bash
+git clone https://github.com/happyc0der/ow2-career-tracker.git
+cd ow2-career-tracker
 uv run owdash serve
 ```
+
+To track a different player, change `player.name` and `player.player_id` in `config.toml` first (see below).
+On Windows, after running the installer below, the Start menu entry **OW2 Career Tracker** does the same.
 
 It syncs once, then opens <http://127.0.0.1:8765>. Close the window (or Ctrl+C) to stop it.
 The **Sync** button in the top-right fetches the latest stats at any time.
@@ -59,7 +61,7 @@ uv run owdash serve --no-browser --no-sync    # just the server
 ```
 
 No Admin needed. The task runs silently (`scripts\sync-hidden.vbs`) and appends to `data\sync.log`.
-On macOS/Linux, add `cd /path/to/ProjectE && uv run owdash sync` to cron instead.
+On macOS/Linux, add `cd /path/to/ow2-career-tracker && uv run owdash sync` to cron instead.
 
 ## Configuration — `config.toml`
 
@@ -82,7 +84,7 @@ owdash/
 web/            index.html, styles.css, app.js (vanilla JS + Chart.js)
 scripts/        Windows installer, hidden sync launcher, start-dashboard.cmd
 data/           owdash.db and sync.log (not in git)
-legacy/test.py  the original one-off OverFast script this grew out of
+legacy/test.py  the original one-off OverFast script this grew out of (uv run --with requests legacy/test.py)
 ```
 
 API docs (auto-generated) are at <http://127.0.0.1:8765/api/docs> while the server runs.
