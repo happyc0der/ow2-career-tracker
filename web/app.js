@@ -296,8 +296,12 @@ async function load() {
   renderBanner(d);
   $("#foot-sync").textContent = d.meta?.last_sync ? `Last sync ${fmtDateTime(d.meta.last_sync.at)} · ${d.meta.last_sync.ok ? "OK" : "failed"}` : "";
   if (d.empty) {
+    // clear everything the previous mode drew, so its charts and hero don't linger
     $("#stat-strip").innerHTML = `<div class="panel empty-state" style="grid-column:1/-1">No stats stored for this mode yet. Press <b>Sync</b> to fetch them.</div>`;
-    $("#roster").innerHTML = ""; return;
+    destroyCharts("");
+    for (const id of ["#roster", "#role-split", "#overview-hint", "#hero-role", "#hero-record", "#hero-stats", "#since-box", "#hero-hint", "#chart-grid", "#cat-tabs", "#career-table"]) $(id).innerHTML = "";
+    $("#hero-name").textContent = "Select a hero"; $("#hero-portrait").removeAttribute("src");
+    document.body.classList.remove("loading"); return;
   }
   renderStatStrip(d); renderRoles(d); renderRoster();
   await renderOverview();
@@ -316,10 +320,11 @@ async function doSync() {
   finally { b.disabled = false; b.classList.remove("busy"); $(".sync-label", b).textContent = "Sync"; }
 }
 
-$$(".mode-tabs .tab").forEach(t => t.addEventListener("click", () => { if (S.mode !== t.dataset.mode) { S.mode = t.dataset.mode; updateHash(); load(); } }));
+$$(".mode-tabs .tab").forEach(t => t.addEventListener("click", () => { if (S.mode !== t.dataset.mode) { S.mode = t.dataset.mode; updateHash(); load().catch(loadFailed); } }));
 $$("#role-filter .chip").forEach(c => c.addEventListener("click", () => { S.role = c.dataset.role; renderRoster(); }));
 $("#sort").addEventListener("change", e => { S.sort = e.target.value; renderRoster(); });
 $("#sync-btn").addEventListener("click", doSync);
 
 readHash();
-load().catch(e => { console.error(e); toast("Couldn't load data — is the server running?"); });
+function loadFailed(e) { console.error(e); document.body.classList.remove("loading"); toast("Couldn't load data — is the server running?"); }
+load().catch(loadFailed);

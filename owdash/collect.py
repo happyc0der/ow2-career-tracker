@@ -92,9 +92,13 @@ def sync(verbose: bool = True) -> dict:
             refresh_metadata(client, s, con)
             msg = f"synced {summary.get('username')} ({new_points} new data point(s))"
             db.log_sync(con, True, new_points, msg)
-        except (SyncError, httpx.HTTPError) as e:
-            msg = f"sync failed: {e}"
-            db.log_sync(con, False, new_points, msg)
+        except Exception as e:  # API errors, unexpected JSON, a locked DB: record it instead of crashing the task
+            msg = f"sync failed: {e}" if isinstance(e, (SyncError, httpx.HTTPError)) else f"sync failed: {type(e).__name__}: {e}"
+            try:
+                con.rollback()
+                db.log_sync(con, False, new_points, msg)
+            except Exception:
+                pass
             if verbose:
                 print(msg)
             return {"ok": False, "new_points": new_points, "message": msg}

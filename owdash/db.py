@@ -37,7 +37,9 @@ CREATE TABLE IF NOT EXISTS sync_log (
 @contextmanager
 def connect() -> Iterator[sqlite3.Connection]:
     DATA_DIR.mkdir(parents=True, exist_ok=True)
-    con = sqlite3.connect(DB_PATH)
+    # wait out a concurrent writer (scheduled sync + Sync button) instead of failing with "database is locked";
+    # a sync can hold its transaction through ~90 s of API retries
+    con = sqlite3.connect(DB_PATH, timeout=120)
     con.row_factory = sqlite3.Row
     try:
         con.executescript(SCHEMA)
