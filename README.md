@@ -14,6 +14,8 @@ healing — in an Overwatch-style UI.
   tables (combat, best, game, assists, averages, hero-specific), for Quick Play and Competitive.
 - **Modes:** All / Quick Play / Competitive.
 
+![Dashboard: player banner, headline stats, career over time, role split and hero roster](docs/dashboard.png)
+
 ## How it works
 
 ```
