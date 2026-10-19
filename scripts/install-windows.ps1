@@ -26,5 +26,6 @@ Register-ScheduledTask -TaskName $task -Action $act -Trigger $every3h, $logon -S
 
 $s = (New-Object -ComObject WScript.Shell).CreateShortcut($lnk)
 $s.TargetPath = "$root\scripts\start-dashboard.cmd"; $s.WorkingDirectory = $root; $s.Description = 'Open the OW2 career dashboard'
+$s.WindowStyle = 7  # start the server's console minimised (closing it stops the dashboard)
 $s.Save()
 "Start menu shortcut created: $lnk"
