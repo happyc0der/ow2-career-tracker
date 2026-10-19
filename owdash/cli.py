@@ -1,4 +1,4 @@
-"""Command line:  owdash sync   |   owdash serve [--no-browser]"""
+"""Command line:  owdash sync  |  owdash serve [--no-browser]  |  owdash export <dir>  |  owdash publish [--setup]"""
 from __future__ import annotations
 
 import argparse
@@ -31,7 +31,24 @@ def main() -> None:
     sv = sub.add_parser("serve", help="run the dashboard web server")
     sv.add_argument("--no-browser", action="store_true", help="don't open a browser tab")
     sv.add_argument("--no-sync", action="store_true", help="skip the sync on startup")
+    ex = sub.add_parser("export", help="write a static, read-only copy of the dashboard into a folder")
+    ex.add_argument("dir")
+    pb = sub.add_parser("publish", help="update the public copy on GitHub Pages (gh-pages branch) if the stats changed")
+    pb.add_argument("--setup", action="store_true", help="first time: create data/site as a gh-pages worktree")
     args = ap.parse_args()
+
+    if args.cmd in ("export", "publish"):
+        from pathlib import Path
+        from . import publish
+        if args.cmd == "export":
+            print(f"exported {publish.export(Path(args.dir))} data files to {args.dir}")
+        else:
+            try:
+                print(publish.publish(args.setup))
+            except Exception as e:  # keep the scheduled task's log readable
+                print(f"publish failed: {e}")
+                raise SystemExit(1)
+        return
 
     from .config import load_settings
     if args.cmd == "sync":

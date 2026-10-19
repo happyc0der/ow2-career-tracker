@@ -40,8 +40,14 @@ function statValue(key, v) {
 }
 
 /* ---------------- data ---------------- */
+// The public read-only copy (owdash export) has no server: "/api/state?mode=all" is the file api/state-all.json.
+const STATIC = window.OWDASH_STATIC === true;
+function staticPath(path) {
+  const u = new URL(path, "https://x");
+  return `.${u.pathname}-${u.searchParams.get("mode") || "all"}.json`;
+}
 async function api(path, opts) {
-  const r = await fetch(path, opts);
+  const r = await fetch(STATIC ? staticPath(path) : path, opts);
   if (!r.ok) throw new Error(`${r.status} ${await r.text()}`);
   return r.json();
 }
@@ -294,7 +300,8 @@ async function load() {
   const d = await api(`/api/state?mode=${S.mode}`);
   S.data = d;
   renderBanner(d);
-  $("#foot-sync").textContent = d.meta?.last_sync ? `Last sync ${fmtDateTime(d.meta.last_sync.at)} · ${d.meta.last_sync.ok ? "OK" : "failed"}` : "";
+  $("#foot-sync").textContent = STATIC ? (d.meta?.last_change ? `Read-only copy · stats as of ${fmtDateTime(d.meta.last_change)}` : "Read-only copy")
+    : d.meta?.last_sync ? `Last sync ${fmtDateTime(d.meta.last_sync.at)} · ${d.meta.last_sync.ok ? "OK" : "failed"}` : "";
   if (d.empty) {
     // clear everything the previous mode drew, so its charts and hero don't linger
     $("#stat-strip").innerHTML = `<div class="panel empty-state" style="grid-column:1/-1">No stats stored for this mode yet. Press <b>Sync</b> to fetch them.</div>`;
@@ -324,6 +331,14 @@ $$(".mode-tabs .tab").forEach(t => t.addEventListener("click", () => { if (S.mod
 $$("#role-filter .chip").forEach(c => c.addEventListener("click", () => { S.role = c.dataset.role; renderRoster(); }));
 $("#sort").addEventListener("change", e => { S.sort = e.target.value; renderRoster(); });
 $("#sync-btn").addEventListener("click", doSync);
+
+if (STATIC) { // no server to sync with: the button links to the project instead
+  const b = $("#sync-btn"), a = document.createElement("a");
+  a.className = b.className; a.id = "sync-btn"; a.href = "https://github.com/happyc0der/ow2-career-tracker";
+  a.target = "_blank"; a.rel = "noopener"; a.title = "Read-only copy, updated automatically. Get the tracker on GitHub";
+  a.innerHTML = '<span class="sync-label">Get your own</span>';
+  b.replaceWith(a);
+}
 
 readHash();
 function loadFailed(e) { console.error(e); document.body.classList.remove("loading"); toast("Couldn't load data — is the server running?"); }

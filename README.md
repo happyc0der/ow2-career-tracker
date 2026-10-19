@@ -4,6 +4,8 @@ A personal Overwatch 2 dashboard for **DankAxon**. It snapshots my public career
 hours and charts every hero's stats over time — time played, win rate, KDA, eliminations, damage and
 healing — in an Overwatch-style UI.
 
+**Live read-only copy:** https://happyc0der.github.io/ow2-career-tracker/ (updated automatically when my stats change)
+
 - **Player banner:** namecard, icon, title, endorsement level and current competitive rank.
 - **Headline stats** with changes since tracking started (games, W/L, time played, session win rate).
 - **Career over time:** win rate and KDA across all snapshots.
@@ -64,6 +66,26 @@ uv run owdash serve --no-browser --no-sync    # just the server
 
 No Admin needed. The task runs silently (`scripts\sync-hidden.vbs`) and appends to `data\sync.log`.
 On macOS/Linux, add `cd /path/to/ow2-career-tracker && uv run owdash sync` to cron instead.
+
+## Public read-only copy (GitHub Pages)
+
+The dashboard only runs on your own PC (`127.0.0.1`). To share it, publish a read-only copy:
+
+```
+uv run owdash publish --setup
+```
+
+This exports the page and every view it can show (all modes, every hero) as static files into `data/site`, a
+worktree of the `gh-pages` branch, and pushes it. Turn on GitHub Pages for the `gh-pages` branch (Settings → Pages)
+and the copy is at `https://<user>.github.io/<repo>/`. In the copy the Sync button becomes a link to this repo,
+and the footer shows when the stats last changed.
+
+After that, the scheduled sync runs `owdash publish` after every sync. It only commits and pushes when your stats
+actually changed. Without `--setup` once, `owdash publish` does nothing. `owdash export <folder>` writes the same
+static copy anywhere, if you'd rather host it yourself.
+
+What goes public is what your public in-game profile already shows: name, avatar, title, endorsement, rank, and the
+stats history this tracker has collected.
 
 ## Configuration — `config.toml`
 
